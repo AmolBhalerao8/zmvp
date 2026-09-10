@@ -1,0 +1,128 @@
+1
+00:00:00,066 --> 00:00:07,567
+Repair shops still run critical work across disconnected calendars, inspections, messages, and parts portals.
+
+2
+00:00:07,567 --> 00:00:11,833
+ZOL brings that journey into one intelligent operating system.
+
+3
+00:00:11,833 --> 00:00:19,816
+We will follow a vehicle from appointment through diagnosis, approval, repair, payment, and long-term customer care.
+
+4
+00:00:22,463 --> 00:00:25,187
+The day begins on ZOL's live dashboard.
+
+5
+00:00:25,187 --> 00:00:32,521
+Managers immediately see appointments, vehicles in the shop, approvals, revenue, and technician workload.
+
+6
+00:00:32,521 --> 00:00:38,178
+The repair-order pipeline replaces status meetings with a shared source of truth.
+
+7
+00:00:38,178 --> 00:00:45,163
+Every number comes from the shop's Cloud SQL database, so the team acts on current operational data.
+
+8
+00:00:47,870 --> 00:00:53,511
+Appointments connect the customer, vehicle, concern, time, and technician before arrival.
+
+9
+00:00:53,511 --> 00:00:57,695
+At check-in, the advisor records mileage, fuel, damage, and notes.
+
+10
+00:00:57,695 --> 00:01:07,520
+ZOL creates the repair order automatically, preserving one continuous record without re-entering information or losing the customer's original description.
+
+11
+00:01:11,967 --> 00:01:21,270
+The repair order is ZOL's central workspace, combining status, diagnostics, inspection, estimate, parts, conversation, and billing.
+
+12
+00:01:21,270 --> 00:01:29,578
+For this Chevrolet Sonic, the technician entered check-engine codes, rough-idle symptoms, and fuel-trim observations.
+
+13
+00:01:29,578 --> 00:01:36,963
+ZOL ranks possible causes and recommends an ordered test plan, always requiring technician verification.
+
+14
+00:01:36,963 --> 00:01:41,508
+The digital inspection captures green, yellow, and red findings.
+
+15
+00:01:41,508 --> 00:01:48,467
+Its customer summary uses only findings the technician entered and never invents vehicle problems.
+
+16
+00:01:54,759 --> 00:02:01,830
+Verified recommendations become an itemized estimate with labor, parts, tax, and transparent demo pricing.
+
+17
+00:02:01,830 --> 00:02:09,502
+The mobile customer portal shows the original concern, inspection, diagnostic context, recommended work, and total.
+
+18
+00:02:09,502 --> 00:02:13,638
+An approval updates the estimate and repair order immediately.
+
+19
+00:02:13,638 --> 00:02:19,309
+Declined work becomes a responsible CRM follow-up instead of disappearing into notes.
+
+20
+00:02:21,974 --> 00:02:24,295
+Approved work moves into execution.
+
+21
+00:02:24,295 --> 00:02:29,005
+Parts are tracked from needed through ordered, received, and installed.
+
+22
+00:02:29,005 --> 00:02:35,903
+The mobile-friendly technician board organizes jobs by owner, urgency, approval, and parts availability.
+
+23
+00:02:35,903 --> 00:02:44,724
+Managers see bottlenecks without interrupting technicians, while technicians move repairs through quality check and ready for pickup.
+
+24
+00:02:47,999 --> 00:02:52,945
+Completed work converts into an invoice without re-keying line items.
+
+25
+00:02:52,945 --> 00:02:58,321
+ZOL supports Stripe test payments and a labeled demo provider for this MVP.
+
+26
+00:02:58,321 --> 00:03:05,704
+Payment marks the invoice paid, closes the repair order, and records the transaction without card data.
+
+27
+00:03:05,704 --> 00:03:12,442
+The CRM turns declined services, maintenance needs, and post-repair check-ins into follow-ups.
+
+28
+00:03:12,442 --> 00:03:16,599
+AI drafts friendly outreach using only verified shop data.
+
+29
+00:03:20,662 --> 00:03:23,956
+Finally, owners get a controlled AI shop assistant.
+
+30
+00:03:23,956 --> 00:03:29,963
+Managers can ask about approvals, tomorrow's arrivals, delayed parts, or technician workload.
+
+31
+00:03:29,963 --> 00:03:35,194
+Answers use safe, tenant-scoped functions rather than generated database queries.
+
+32
+00:03:35,194 --> 00:03:48,112
+ZOL connects the customer-to-cash workflow today, with clean paths to production payments, messaging, storage, and supplier data: a foundation for a more efficient shop and a better-informed customer.
+

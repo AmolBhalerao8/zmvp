@@ -1,0 +1,212 @@
+1
+00:00:00,025 --> 00:00:07,735
+For most repair shops, the customer journey begins with a phone call, and every missed call can mean a missed repair order.
+
+2
+00:00:07,735 --> 00:00:10,117
+ZOL is designed to answer immediately.
+
+3
+00:00:10,117 --> 00:00:25,725
+In this complete product vision, we will follow Jordan and a 2015 Chevrolet Sonic from the first conversation through diagnosis, repair, payment, and long-term customer care, while also exploring the operating tools used by managers and technicians.
+
+4
+00:00:29,822 --> 00:00:35,400
+Jordan calls because the check-engine light is on and the Sonic shakes while stopped.
+
+5
+00:00:35,400 --> 00:00:43,668
+Ava, ZOL's AI receptionist, greets the customer, identifies the vehicle, and asks focused safety and service-intake questions.
+
+6
+00:00:43,668 --> 00:00:47,342
+Ava does not make a definitive diagnosis over the phone.
+
+7
+00:00:47,342 --> 00:00:57,645
+She establishes whether the warning light is steady or flashing, asks about overheating, stalling, and power loss, and provides conservative safety guidance.
+
+8
+00:00:57,645 --> 00:01:05,322
+The complete conversation is transcribed automatically, so the advisor never has to reconstruct the call from memory.
+
+9
+00:01:11,975 --> 00:01:23,970
+ZOL converts the transcript into structured, usable information: customer identity, vehicle, primary complaint, symptoms, urgency, requested service, preferred time, and safety advice.
+
+10
+00:01:23,970 --> 00:01:28,599
+The system matches Jordan to the existing customer and vehicle records.
+
+11
+00:01:28,599 --> 00:01:41,507
+It then checks the shop calendar and technician specialties, finds the earliest conflict-free diagnostic opening, assigns Marcus, reserves the bay, creates the appointment, and sends a confirmation.
+
+12
+00:01:41,507 --> 00:01:49,525
+The call, transcript, extracted details, booking outcome, and confirmation become part of the customer relationship record.
+
+13
+00:01:50,670 --> 00:01:53,153
+The confirmation is only the first update.
+
+14
+00:01:53,153 --> 00:01:56,464
+ZOL maintains a communication journey around the repair.
+
+15
+00:01:56,464 --> 00:02:11,601
+The customer can receive notifications when the appointment is confirmed, the vehicle is checked in, diagnostics are complete, an estimate is ready, work is approved, parts are ordered or received, repairs are complete, and the vehicle is ready for pickup.
+
+16
+00:02:11,601 --> 00:02:20,470
+Message history stays connected to the customer and repair order, while the provider remains replaceable for SMS, email, or future voice integrations.
+
+17
+00:02:24,912 --> 00:02:36,224
+Inside the shop, the live dashboard gives managers an immediate picture of appointments, vehicles in process, approvals, parts delays, pickup readiness, revenue, and technician workload.
+
+18
+00:02:36,224 --> 00:02:42,367
+The calendar connects every appointment to the customer, vehicle, complaint, and assigned technician.
+
+19
+00:02:42,367 --> 00:02:48,814
+When Jordan arrives, the advisor records mileage, fuel, visible damage, notes, and photos where available.
+
+20
+00:02:48,814 --> 00:02:56,112
+Check-in creates the repair order automatically and preserves the original call details as the work moves into the shop.
+
+21
+00:03:01,340 --> 00:03:05,532
+ZOL maintains a connected profile for every customer and vehicle.
+
+22
+00:03:05,532 --> 00:03:16,561
+The shop can review contact preferences, vehicles, past visits, messages, invoices, payments, declined work, upcoming maintenance, lifetime value, and now AI call history.
+
+23
+00:03:16,561 --> 00:03:22,753
+Vehicle records preserve mileage, inspections, diagnostics, recommendations, and repair history.
+
+24
+00:03:22,753 --> 00:03:34,040
+Global search can find a customer name, license plate, VIN, vehicle description, repair-order number, appointment, or invoice and take the user directly to the correct record.
+
+25
+00:03:48,527 --> 00:03:52,056
+The repair order is the operational center of ZOL.
+
+26
+00:03:52,056 --> 00:04:01,656
+It combines the complaint, technician, status timeline, diagnostics, inspection, estimate, parts, labor, messages, invoice, and payment.
+
+27
+00:04:01,656 --> 00:04:10,409
+For the Sonic, the technician enters trouble codes, rough-idle symptoms, fuel-trim data, observations, and relevant history.
+
+28
+00:04:10,409 --> 00:04:16,974
+ZOL ranks possible causes, explains supporting evidence, and recommends an ordered test plan.
+
+29
+00:04:16,974 --> 00:04:29,327
+Every result carries a visible warning that AI assistance requires technician verification, protecting the distinction between intake, recommendation, and confirmed diagnosis.
+
+30
+00:04:32,766 --> 00:04:44,745
+The technician completes a digital inspection across engine, transmission, brakes, tires, suspension, steering, battery, fluids, lights, heating and air conditioning, exterior, interior, and safety.
+
+31
+00:04:44,745 --> 00:04:50,916
+Each item is marked green, yellow, red, or not inspected, with notes, measurements, and media support.
+
+32
+00:04:50,916 --> 00:04:55,575
+ZOL's AI summary is grounded only in the findings that were actually entered.
+
+33
+00:04:55,575 --> 00:05:03,016
+It highlights urgent issues, recommended service, maintenance, and safety concerns in language the customer can understand.
+
+34
+00:05:07,986 --> 00:05:15,167
+Verified recommendations become an editable estimate with labor, parts, fees, discounts, tax, and total.
+
+35
+00:05:15,167 --> 00:05:24,765
+AI can suggest repair explanations and labor or parts categories, while pricing remains clearly identified as shop-entered or demo pricing.
+
+36
+00:05:24,765 --> 00:05:35,260
+The mobile customer portal brings together the original concern, inspection results, photos, diagnostic context, recommendations, and itemized estimate.
+
+37
+00:05:35,260 --> 00:05:38,436
+Approval updates the repair order immediately.
+
+38
+00:05:38,436 --> 00:05:44,236
+Declined items are retained for responsible future follow-up rather than being lost.
+
+39
+00:05:50,579 --> 00:05:52,765
+Approved work moves into execution.
+
+40
+00:05:52,765 --> 00:06:01,133
+Parts progress from needed to requested, ordered, received, installed, or returned, with supplier, quantity, cost, and customer price.
+
+41
+00:06:01,133 --> 00:06:08,814
+The technician board organizes active work by assignment, urgency, approval, and parts state for desktop, tablet, or phone.
+
+42
+00:06:08,814 --> 00:06:13,685
+Technicians can move jobs through repair, quality check, and ready for pickup.
+
+43
+00:06:13,685 --> 00:06:21,179
+Customer messages, shop updates, and internal technician notes remain attached to the correct customer and repair order.
+
+44
+00:06:25,854 --> 00:06:32,704
+When work is complete, ZOL converts the approved estimate into an invoice without re-entering line items.
+
+45
+00:06:32,704 --> 00:06:37,792
+The MVP supports Stripe test mode and a clearly labeled demo-payment fallback.
+
+46
+00:06:37,792 --> 00:06:40,271
+ZOL never stores raw card information.
+
+47
+00:06:40,271 --> 00:06:50,839
+A successful payment records the transaction, marks the invoice paid, closes the repair order, updates service history, and creates a post-repair CRM opportunity.
+
+48
+00:06:50,839 --> 00:06:59,254
+Customers can track vehicle status, review approvals, see messages, and access payment from their own mobile-friendly experience.
+
+49
+00:07:07,989 --> 00:07:19,015
+ZOL's automotive CRM turns completed repairs, declined services, inspection recommendations, upcoming maintenance, and customers who have not returned into actionable follow-ups.
+
+50
+00:07:19,015 --> 00:07:23,537
+AI drafts friendly outreach using only verified vehicle and service data.
+
+51
+00:07:23,537 --> 00:07:32,643
+Owners can ask the controlled shop assistant about approvals, tomorrow's schedule, parts delays, technician workload, and previous recommendations.
+
+52
+00:07:32,643 --> 00:07:41,811
+Tenant isolation, server-side authorization, validated AI output, Cloud SQL persistence, and replaceable integrations create a practical foundation.
+
+53
+00:07:41,811 --> 00:07:52,589
+ZOL connects the complete customer-to-cash journey while helping the shop answer faster, communicate clearly, operate efficiently, and build stronger long-term relationships.
+

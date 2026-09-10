@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7f7;
+  --foreground: #142322;
+  --muted: #647776;
+  --line: #dce5e4;
+  --brand: #0b7a69;
+  --brand-dark: #07584d;
+  --nav: #102b29;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-nav: var(--nav);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--line);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition: all 150ms ease;
+}
+
+button:not(:disabled),
+a {
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgb(11 122 105 / 0.12);
+}
+
+::selection {
+  color: white;
+  background: var(--brand);
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 1px 2px rgb(15 42 40 / 0.03);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: white;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.875rem;
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.7rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.btn-primary {
+  color: white;
+  background: var(--brand);
+}
+
+.btn-primary:hover {
+  background: var(--brand-dark);
+}
+
+.btn-secondary {
+  border: 1px solid var(--line);
+  color: var(--foreground);
+  background: white;
+}
+
+.btn-secondary:hover {
+  background: #f7fafa;
+}
+
+.table-row {
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 767px) {
+  .mobile-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}

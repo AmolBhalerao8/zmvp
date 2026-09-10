@@ -1,0 +1,14 @@
+import Link from "next/link";
+import { Package } from "lucide-react";
+import { updatePartStatus } from "@/app/actions";
+import { PageHeader } from "@/components/ui";
+import { requireStaff } from "@/lib/auth/session";
+import { prisma } from "@/lib/db/prisma";
+import { money } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
+export default async function PartsPage() {
+  const session = await requireStaff();
+  const parts = await prisma.part.findMany({ where: { shopId: session.user.shopId }, include: { repairOrder: { include: { vehicle: true, customer: true } } }, orderBy: { updatedAt: "desc" } });
+  return <><PageHeader eyebrow="Supply chain" title="Parts" description="Track every required component from request and order through receipt and installation." /><div className="mb-5 grid gap-3 sm:grid-cols-4">{["NEEDED", "ORDERED", "RECEIVED", "INSTALLED"].map((status) => <div key={status} className="card p-4"><p className="text-2xl font-bold">{parts.filter((p) => p.status === status).length}</p><p className="text-xs text-muted">{status.toLowerCase()}</p></div>)}</div><div className="card overflow-hidden"><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-[#f8fafa] text-[11px] uppercase tracking-wider text-muted"><tr><th className="px-5 py-3">Part</th><th className="px-4 py-3">Job</th><th className="px-4 py-3">Supplier</th><th className="px-4 py-3">Cost / Price</th><th className="px-4 py-3">Status</th></tr></thead><tbody>{parts.map((part) => <tr key={part.id} className="table-row"><td className="px-5 py-4"><p className="font-bold">{part.name}</p><p className="text-xs text-muted">{part.partNumber || "No part number"} · Qty {part.quantity}</p></td><td className="px-4 py-4"><Link href={`/repair-orders/${part.repairOrderId}`} className="font-bold text-brand">{part.repairOrder.roNumber}</Link><p className="text-xs text-muted">{part.repairOrder.vehicle.year} {part.repairOrder.vehicle.make} {part.repairOrder.vehicle.model}</p></td><td className="px-4 py-4">{part.supplier || "Unassigned"}</td><td className="px-4 py-4">{money(part.unitCost)} <span className="text-muted">/</span> {money(part.unitPrice)}</td><td className="px-4 py-4"><form action={updatePartStatus} className="flex items-center gap-2"><input type="hidden" name="partId" value={part.id} /><select name="status" defaultValue={part.status} className="rounded-lg border px-2 py-1.5 text-xs">{["NEEDED", "REQUESTED", "ORDERED", "RECEIVED", "INSTALLED", "RETURNED"].map((s) => <option key={s}>{s}</option>)}</select><button className="btn btn-secondary min-h-8 px-2 py-1 text-xs">Save</button></form></td></tr>)}</tbody></table></div>{!parts.length && <div className="grid min-h-52 place-items-center"><Package className="size-9 text-muted" /></div>}</div></>;
+}

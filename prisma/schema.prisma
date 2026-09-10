@@ -1,0 +1,702 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  TECHNICIAN
+  CUSTOMER
+}
+
+enum ContactMethod {
+  EMAIL
+  SMS
+  PHONE
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  CHECKED_IN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum RepairOrderStatus {
+  NEW
+  CHECKED_IN
+  DIAGNOSING
+  AWAITING_APPROVAL
+  WAITING_FOR_PARTS
+  IN_REPAIR
+  QUALITY_CHECK
+  READY_FOR_PICKUP
+  COMPLETED
+  CLOSED
+}
+
+enum InspectionRating {
+  GREEN
+  YELLOW
+  RED
+  NOT_INSPECTED
+}
+
+enum EstimateStatus {
+  DRAFT
+  SENT
+  VIEWED
+  APPROVED
+  DECLINED
+  EXPIRED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+enum LineItemType {
+  LABOR
+  PART
+  FEE
+}
+
+enum PartStatus {
+  NEEDED
+  REQUESTED
+  ORDERED
+  RECEIVED
+  INSTALLED
+  RETURNED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  PARTIALLY_PAID
+  VOID
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum MessageChannel {
+  IN_APP
+  SMS
+  EMAIL
+  TECH_NOTE
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+  INTERNAL
+}
+
+enum FollowUpStatus {
+  OPEN
+  SCHEDULED
+  SENT
+  COMPLETED
+  DISMISSED
+}
+
+enum FollowUpType {
+  DECLINED_SERVICE
+  MAINTENANCE_DUE
+  POST_REPAIR
+  WIN_BACK
+  INSPECTION_RECOMMENDATION
+}
+
+enum NotificationType {
+  APPOINTMENT
+  CHECK_IN
+  DIAGNOSIS
+  ESTIMATE
+  PART
+  REPAIR
+  INVOICE
+  PAYMENT
+  MESSAGE
+}
+
+enum CallStatus {
+  RINGING
+  IN_PROGRESS
+  PROCESSING
+  COMPLETED
+  ESCALATED
+  MISSED
+}
+
+enum CallOutcome {
+  APPOINTMENT_BOOKED
+  STATUS_PROVIDED
+  QUESTION_ANSWERED
+  ESCALATED
+  NO_ACTION
+}
+
+model Shop {
+  id            String           @id @default(cuid())
+  name          String
+  address       String?
+  phone         String?
+  email         String?
+  logoUrl       String?
+  taxRate       Decimal          @default(8.25) @db.Decimal(5, 2)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  users         User[]
+  customers     Customer[]
+  vehicles      Vehicle[]
+  appointments  Appointment[]
+  repairOrders  RepairOrder[]
+  diagnostics   Diagnostic[]
+  inspections   Inspection[]
+  estimates     Estimate[]
+  parts         Part[]
+  messages      Message[]
+  invoices      Invoice[]
+  payments      Payment[]
+  notifications Notification[]
+  followUps     CRMFollowUp[]
+  conversations AIConversation[]
+  documents     Document[]
+  photos        Photo[]
+  calls         CallRecord[]
+}
+
+model User {
+  id            String         @id @default(cuid())
+  shopId        String
+  customerId    String?        @unique
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          UserRole
+  phone         String?
+  specialties   String[]
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  shop          Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer      Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  appointments  Appointment[]  @relation("AppointmentTechnician")
+  repairOrders  RepairOrder[]  @relation("RepairOrderTechnician")
+  inspections   Inspection[]   @relation("InspectionTechnician")
+  diagnostics   Diagnostic[]   @relation("DiagnosticTechnician")
+  labor         RepairLabor[]
+  sentMessages  Message[]      @relation("MessageSender")
+  notifications Notification[]
+
+  @@index([shopId, role])
+}
+
+model Customer {
+  id               String        @id @default(cuid())
+  shopId           String
+  firstName        String
+  lastName         String
+  phone            String
+  email            String?
+  address          String?
+  notes            String?
+  preferredContact ContactMethod @default(SMS)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  shop             Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user             User?
+  vehicles         Vehicle[]
+  appointments     Appointment[]
+  repairOrders     RepairOrder[]
+  estimates        Estimate[]
+  messages         Message[]
+  invoices         Invoice[]
+  followUps        CRMFollowUp[]
+  calls            CallRecord[]
+
+  @@index([shopId, lastName])
+  @@index([shopId, phone])
+  @@index([shopId, email])
+}
+
+model Vehicle {
+  id           String        @id @default(cuid())
+  shopId       String
+  customerId   String
+  vin          String?
+  year         Int
+  make         String
+  model        String
+  trim         String?
+  engine       String?
+  mileage      Int
+  licensePlate String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  shop         Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  repairOrders RepairOrder[]
+  diagnostics  Diagnostic[]
+  inspections  Inspection[]
+  estimates    Estimate[]
+  invoices     Invoice[]
+  photos       Photo[]
+  followUps    CRMFollowUp[]
+  calls        CallRecord[]
+
+  @@unique([shopId, vin])
+  @@index([shopId, make, model])
+  @@index([customerId])
+}
+
+model Appointment {
+  id           String            @id @default(cuid())
+  shopId       String
+  customerId   String
+  vehicleId    String
+  technicianId String?
+  scheduledAt  DateTime
+  durationMin  Int               @default(60)
+  serviceType  String
+  complaint    String
+  status       AppointmentStatus @default(SCHEDULED)
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  shop         Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer     Customer          @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle      Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  technician   User?             @relation("AppointmentTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+  repairOrder  RepairOrder?
+  callRecord   CallRecord?
+
+  @@index([shopId, scheduledAt])
+  @@index([technicianId, scheduledAt])
+}
+
+model RepairOrder {
+  id            String            @id @default(cuid())
+  shopId        String
+  appointmentId String?           @unique
+  customerId    String
+  vehicleId     String
+  technicianId  String?
+  roNumber      String
+  complaint     String
+  mileageIn     Int
+  fuelLevel     Int?
+  visibleDamage String?
+  checkInNotes  String?
+  checkedInAt   DateTime?
+  status        RepairOrderStatus @default(NEW)
+  promisedAt    DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  shop          Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  appointment   Appointment?      @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  customer      Customer          @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle       Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  technician    User?             @relation("RepairOrderTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+  diagnostics   Diagnostic[]
+  inspections   Inspection[]
+  estimates     Estimate[]
+  parts         Part[]
+  labor         RepairLabor[]
+  messages      Message[]
+  invoice       Invoice?
+  photos        Photo[]
+  documents     Document[]
+  followUps     CRMFollowUp[]
+
+  @@unique([shopId, roNumber])
+  @@index([shopId, status])
+  @@index([technicianId, status])
+}
+
+model Diagnostic {
+  id                     String      @id @default(cuid())
+  shopId                 String
+  repairOrderId          String
+  vehicleId              String
+  technicianId           String?
+  obdCodes               String[]
+  symptoms               String?
+  observations           String?
+  aiResult               Json?
+  aiStatus               String?
+  technicianVerification String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  shop                   Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder            RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  vehicle                Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  technician             User?       @relation("DiagnosticTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, repairOrderId])
+}
+
+model Inspection {
+  id            String           @id @default(cuid())
+  shopId        String
+  repairOrderId String
+  vehicleId     String
+  technicianId  String?
+  title         String
+  overallRating InspectionRating @default(NOT_INSPECTED)
+  aiSummary     String?
+  completedAt   DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  shop          Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder      @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  vehicle       Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  technician    User?            @relation("InspectionTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+  items         InspectionItem[]
+  photos        Photo[]
+
+  @@index([shopId, repairOrderId])
+}
+
+model InspectionItem {
+  id           String           @id @default(cuid())
+  inspectionId String
+  category     String
+  name         String
+  rating       InspectionRating @default(NOT_INSPECTED)
+  notes        String?
+  measurement  String?
+  sortOrder    Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  inspection   Inspection       @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  photos       Photo[]
+
+  @@index([inspectionId, category])
+}
+
+model Estimate {
+  id             String         @id @default(cuid())
+  portalToken    String         @unique @default(cuid())
+  shopId         String
+  repairOrderId  String
+  customerId     String
+  vehicleId      String
+  estimateNumber String
+  status         EstimateStatus @default(DRAFT)
+  subtotal       Decimal        @db.Decimal(10, 2)
+  tax            Decimal        @db.Decimal(10, 2)
+  discount       Decimal        @default(0) @db.Decimal(10, 2)
+  total          Decimal        @db.Decimal(10, 2)
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  respondedAt    DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  shop           Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder    RepairOrder    @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle        Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  items          EstimateItem[]
+  invoice        Invoice?
+
+  @@unique([shopId, estimateNumber])
+  @@index([shopId, status])
+}
+
+model EstimateItem {
+  id             String         @id @default(cuid())
+  estimateId     String
+  type           LineItemType
+  description    String
+  quantity       Decimal        @default(1) @db.Decimal(8, 2)
+  unitPrice      Decimal        @db.Decimal(10, 2)
+  total          Decimal        @db.Decimal(10, 2)
+  approvalStatus ApprovalStatus @default(PENDING)
+  sortOrder      Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  estimate       Estimate       @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+
+  @@index([estimateId, approvalStatus])
+}
+
+model Part {
+  id            String      @id @default(cuid())
+  shopId        String
+  repairOrderId String
+  name          String
+  partNumber    String?
+  supplier      String?
+  quantity      Int         @default(1)
+  unitCost      Decimal     @db.Decimal(10, 2)
+  unitPrice     Decimal     @db.Decimal(10, 2)
+  status        PartStatus  @default(NEEDED)
+  orderedAt     DateTime?
+  receivedAt    DateTime?
+  installedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  shop          Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  orders        PartOrder[]
+
+  @@index([shopId, status])
+  @@index([repairOrderId])
+}
+
+model PartOrder {
+  id             String    @id @default(cuid())
+  partId         String
+  supplier       String
+  orderReference String?
+  quantity       Int
+  cost           Decimal   @db.Decimal(10, 2)
+  expectedAt     DateTime?
+  orderedAt      DateTime  @default(now())
+  receivedAt     DateTime?
+  part           Part      @relation(fields: [partId], references: [id], onDelete: Cascade)
+}
+
+model RepairLabor {
+  id            String      @id @default(cuid())
+  repairOrderId String
+  technicianId  String?
+  description   String
+  hours         Decimal     @db.Decimal(6, 2)
+  rate          Decimal     @db.Decimal(10, 2)
+  completed     Boolean     @default(false)
+  startedAt     DateTime?
+  completedAt   DateTime?
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  technician    User?       @relation(fields: [technicianId], references: [id], onDelete: SetNull)
+}
+
+model Message {
+  id            String           @id @default(cuid())
+  shopId        String
+  customerId    String?
+  repairOrderId String?
+  senderId      String?
+  channel       MessageChannel   @default(IN_APP)
+  direction     MessageDirection
+  body          String
+  providerId    String?
+  readAt        DateTime?
+  createdAt     DateTime         @default(now())
+  shop          Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer      Customer?        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder?     @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  sender        User?            @relation("MessageSender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, createdAt])
+  @@index([repairOrderId, createdAt])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  shopId        String
+  repairOrderId String        @unique
+  estimateId    String?       @unique
+  customerId    String
+  vehicleId     String
+  invoiceNumber String
+  status        InvoiceStatus @default(DRAFT)
+  subtotal      Decimal       @db.Decimal(10, 2)
+  tax           Decimal       @db.Decimal(10, 2)
+  discount      Decimal       @default(0) @db.Decimal(10, 2)
+  total         Decimal       @db.Decimal(10, 2)
+  dueAt         DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  shop          Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder   @relation(fields: [repairOrderId], references: [id], onDelete: Restrict)
+  estimate      Estimate?     @relation(fields: [estimateId], references: [id], onDelete: SetNull)
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle       Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  items         InvoiceItem[]
+  payments      Payment[]
+
+  @@unique([shopId, invoiceNumber])
+  @@index([shopId, status])
+}
+
+model InvoiceItem {
+  id          String       @id @default(cuid())
+  invoiceId   String
+  type        LineItemType
+  description String
+  quantity    Decimal      @default(1) @db.Decimal(8, 2)
+  unitPrice   Decimal      @db.Decimal(10, 2)
+  total       Decimal      @db.Decimal(10, 2)
+  invoice     Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  shopId        String
+  invoiceId     String
+  amount        Decimal       @db.Decimal(10, 2)
+  method        String
+  status        PaymentStatus @default(PENDING)
+  provider      String
+  transactionId String?
+  processedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  shop          Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  @@index([shopId, status])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  shopId    String
+  userId    String?
+  type      NotificationType
+  title     String
+  body      String
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  shop      Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, readAt, createdAt])
+}
+
+model CRMFollowUp {
+  id            String         @id @default(cuid())
+  shopId        String
+  customerId    String
+  vehicleId     String?
+  repairOrderId String?
+  type          FollowUpType
+  status        FollowUpStatus @default(OPEN)
+  title         String
+  details       String
+  dueAt         DateTime?
+  aiDraft       String?
+  completedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  shop          Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer      Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicle       Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  repairOrder   RepairOrder?   @relation(fields: [repairOrderId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, status, dueAt])
+}
+
+model AIConversation {
+  id         String      @id @default(cuid())
+  shopId     String
+  userId     String?
+  customerId String?
+  type       String
+  title      String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  shop       Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  messages   AIMessage[]
+  callRecord CallRecord?
+
+  @@index([shopId, type])
+}
+
+model CallRecord {
+  id                 String          @id @default(cuid())
+  shopId             String
+  customerId         String?
+  vehicleId          String?
+  appointmentId      String?         @unique
+  conversationId     String?         @unique
+  callerName         String?
+  callerPhone        String
+  status             CallStatus      @default(RINGING)
+  outcome            CallOutcome?
+  direction          String          @default("INBOUND")
+  durationSec        Int?
+  sentiment          String?
+  summary            String?
+  extractedDetails   Json?
+  recordingUrl       String?
+  escalationRequired Boolean         @default(false)
+  startedAt          DateTime        @default(now())
+  endedAt            DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  shop               Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer           Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  vehicle            Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  appointment        Appointment?    @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  conversation       AIConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, startedAt])
+  @@index([shopId, status])
+  @@index([customerId])
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  structuredData Json?
+  createdAt      DateTime       @default(now())
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id            String       @id @default(cuid())
+  shopId        String
+  repairOrderId String?
+  name          String
+  type          String
+  storageKey    String
+  url           String
+  createdAt     DateTime     @default(now())
+  shop          Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder? @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+}
+
+model Photo {
+  id               String          @id @default(cuid())
+  shopId           String
+  vehicleId        String?
+  repairOrderId    String?
+  inspectionId     String?
+  inspectionItemId String?
+  url              String
+  storageKey       String
+  caption          String?
+  createdAt        DateTime        @default(now())
+  shop             Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  vehicle          Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  repairOrder      RepairOrder?    @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  inspection       Inspection?     @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  inspectionItem   InspectionItem? @relation(fields: [inspectionItemId], references: [id], onDelete: Cascade)
+}
